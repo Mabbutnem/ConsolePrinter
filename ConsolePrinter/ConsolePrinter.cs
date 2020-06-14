@@ -10,45 +10,10 @@ namespace ConsolePrinter
 
       public static void Print(string[] fields, string[][] values)
       {
-         //Checking length
-         foreach (string[] strArray in values)
-         {
-            if (strArray.Length != fields.Length)
-            {
-               Console.WriteLine("Can't print : fields and values don't have same Length.");
-               return;
-            }
-         }
-
-         //Calculating needed spaces
-         int[] maxStrLength = fields.Select(str => str.Length).ToArray();
-         foreach (string[] strArray in values)
-         {
-            for (int i = 0; i < strArray.Length; i++)
-            {
-               maxStrLength[i] = Math.Max(maxStrLength[i], strArray[i].Length);
-            }
-         }
-         maxStrLength = maxStrLength.Select(i => i + NB_MIN_SPACE).ToArray();
-
-         //Printing
-         Console.ForegroundColor = ConsoleColor.White;
-         for (int i = 0; i < fields.Length; i++)
-         {
-            Console.Write(fields[i]);
-            PrintSpace(maxStrLength[i] - fields[i].Length);
-         }
-         Console.ResetColor();
-         Console.WriteLine();
-         foreach (string[] strArray in values)
-         {
-            for (int i = 0; i < strArray.Length; i++)
-            {
-               Console.Write(strArray[i]);
-               PrintSpace(maxStrLength[i] - strArray[i].Length);
-            }
-            Console.WriteLine();
-         }
+         PrintingColor baseColor = PrintingColor.Base();
+         PrintingColor[] printingColors = new PrintingColor[fields.Length];
+         for(int i = 0; i < printingColors.Length; i++) { printingColors[i] = baseColor; }
+         Print(fields, values, printingColors);
       }
 
       public static void Print(string[] fields, string[][] values, PrintingColor[] printingColors)
@@ -80,6 +45,7 @@ namespace ConsolePrinter
          maxStrLength = maxStrLength.Select(i => i + NB_MIN_SPACE).ToArray();
 
          //Printing
+         Console.WriteLine();
          Console.ForegroundColor = ConsoleColor.White;
          for (int i = 0; i < fields.Length; i++)
          {
