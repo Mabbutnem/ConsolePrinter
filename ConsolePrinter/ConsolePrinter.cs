@@ -70,6 +70,7 @@ namespace ConsolePrinter
             }
             Console.WriteLine();
          }
+         Console.WriteLine();
       }
 
       private static void PrintSpace(int nb)
