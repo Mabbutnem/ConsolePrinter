@@ -46,6 +46,7 @@ namespace ConsolePrinter
          while (!Quit);
       }
 
+      #region Person
       static int PersonAction(PersonOptions opt)
       {
          ParserResult<object> parserResult = CommandLineParser.ParseArguments<PersonLSOptions, PersonAddOptions>(opt.Options);
@@ -75,7 +76,9 @@ namespace ConsolePrinter
          Persons.Add(new Person("#", 0, "#", "#"));
          return 0;
       }
+      #endregion
 
+      #region Cat
       static int CatAction(CatOptions opt)
       {
          ParserResult<object> parserResult = CommandLineParser.ParseArguments<CatLSOptions, CatAddOptions>(opt.Options);
@@ -98,14 +101,18 @@ namespace ConsolePrinter
          Cats.Add(new Cat("#", 0, "#"));
          return 0;
       }
+      #endregion
 
+      #region Quit
       static int QuitAction(QuitOptions opt)
       {
          Quit = true;
          return 0;
       }
+      #endregion
    }
 
+   #region Person
    [Verb("person", HelpText = "Actions related to Persons.")]
    class PersonOptions
    {
@@ -122,7 +129,9 @@ namespace ConsolePrinter
    class PersonAddOptions
    {
    }
+   #endregion
 
+   #region Cat
    [Verb("cat", HelpText = "Actions related to Cats.")]
    class CatOptions
    {
@@ -139,9 +148,12 @@ namespace ConsolePrinter
    class CatAddOptions
    {
    }
+   #endregion
 
+   #region Quit
    [Verb("quit", HelpText = "Quit application.")]
    class QuitOptions
    {
    }
+   #endregion
 }
