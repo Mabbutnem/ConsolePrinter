@@ -28,7 +28,10 @@ namespace ConsolePrinter
       };
       #endregion
 
-      public static Parser CommandLineParser { get; } = CommandLine.Parser.Default;
+      public static Parser CommandLineParser { get; } = new CommandLine.Parser(conf =>
+      {
+         conf.HelpWriter = null;
+      });
 
       static void Main()
       {
@@ -41,19 +44,35 @@ namespace ConsolePrinter
                .WithParsed<PersonOptions>(opt => PersonAction(opt))
                .WithParsed<CatOptions>(opt => CatAction(opt))
                .WithParsed<QuitOptions>(opt => QuitAction(opt))
-               .WithNotParsed(err => { });
+               .WithNotParsed(err => DisplayHelp(parserResult, "game"));
          }
          while (!Quit);
       }
+
+      #region Helper
+      static void DisplayHelp<T>(ParserResult<T> result, string parent)
+      {
+         var helpText = HelpText.AutoBuild(result, h =>
+         {
+            h.AdditionalNewLineAfterOption = false;
+            h.AutoVersion = false;
+            h.Heading = "";
+            h.Copyright = " " + parent + ":";
+            return h;
+         });
+         Console.WriteLine(helpText);
+      }
+      #endregion
 
       #region Person
       static int PersonAction(PersonOptions opt)
       {
          ParserResult<object> parserResult = CommandLineParser.ParseArguments<PersonLSOptions, PersonAddOptions>(opt.Options);
-         parserResult.WithParsed<PersonLSOptions>(opt => DisplayPersons(opt))
+         parserResult
+            .WithParsed<PersonLSOptions>(opt => DisplayPersons(opt))
             .WithParsed<PersonAddOptions>(opt => AddPerson(opt))
-            .WithNotParsed(err => { });
-         
+            .WithNotParsed(err => DisplayHelp(parserResult, "person"));
+
          return 0;
       }
       static int DisplayPersons(PersonLSOptions opt)
@@ -82,9 +101,10 @@ namespace ConsolePrinter
       static int CatAction(CatOptions opt)
       {
          ParserResult<object> parserResult = CommandLineParser.ParseArguments<CatLSOptions, CatAddOptions>(opt.Options);
-         parserResult.WithParsed<CatLSOptions>(opt => DisplayCats(opt))
+         parserResult
+            .WithParsed<CatLSOptions>(opt => DisplayCats(opt))
             .WithParsed<CatAddOptions>(opt => AddCat(opt))
-            .WithNotParsed(err => { });
+            .WithNotParsed(err => DisplayHelp(parserResult, "cat"));
 
          return 0;
       }
