@@ -60,12 +60,18 @@ namespace ConsolePrinter
          ConsolePrinter.Print(
             new string[] { "Name", "Age", "Town", "Hobbies" },
             Persons.Select(p => new string[] { p.Name, p.Age.ToString(), p.Town, p.Hobbies }).ToArray(),
-            new PrintingColor[]
+            new Func<string, ConsoleColor>[]
             {
-               PrintingColor.Base(),
-               PrintingColor.Create(ConsoleColor.Red,    str => int.TryParse(str, out int i) && i == 23),
-               PrintingColor.Base(),
-               PrintingColor.Base(),
+               ConsolePrinter.BaseColor,
+               str =>
+               {
+                  if(!int.TryParse(str, out int i)) { return ConsoleColor.Gray; }
+                  if(i >= 23) { return ConsoleColor.Red; }
+                  else if(i <= 21) { return ConsoleColor.Green; }
+                  else { return ConsoleColor.Gray; }
+               },
+               ConsolePrinter.BaseColor,
+               ConsolePrinter.BaseColor,
             }
          );
          return 0;
